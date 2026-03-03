@@ -243,7 +243,9 @@ els.topCards.innerHTML='';
       card.innerHTML = `<div class="t">${x.label}</div><div class="d">${fmtJP(x.iso)}(${weekdayJP(x.iso)})</div><div class="p">${cls==='overdue'?'期限切れ':cls==='soon'?'まもなく':' '}</div>`;
       els.topCards.appendChild(card);
     });
-  }  function renderTasks(){
+}
+
+function renderTasks(){
     els.taskBody.innerHTML='';
     (activeCase.tasks||[]).forEach(t=>{
       const tr=document.createElement('tr');
