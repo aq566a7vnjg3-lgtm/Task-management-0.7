@@ -584,7 +584,7 @@ const regPlannedISO = regFixedISO || ((hqArrivalISO && blank) ? calcRegPlannedDa
   const garageLead = (caseObj.garageRequired==='不要') ? null : (caseObj.garageLeadBusinessDays ?? settings.defaultGarageLeadBusinessDays);
   const garageDueISO = calcGarageCertDue(deliveryISO, garageLead, settings);
 
-  const regForHopeISO = (caseObj.regDate || regFixedISO || regPlannedISO);
+  const regForHopeISO = (caseObj.mode==='納車日逆算' ? (caseObj.regDate || regFixedISO) : (regPlannedISO));
   const hopeApplyISO = calcHopeNoApplyDue(regForHopeISO, caseObj.hopeNoType, settings);
 
   // write back to case derived fields

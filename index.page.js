@@ -203,39 +203,12 @@ import {
     `;
   }  function renderTopCards(){
     if(!activeCase){ els.topCards.innerHTML=''; return; }
-
-    // 希望番号申請期限（登録日=希望番号完成日から逆算）
-    const hopeISO = activeCase.derived?.hopeNoApplyDueDate
-      || (activeCase.tasks||[]).find(t=>t.key==='hope_no_apply')?.dueDate
-      || null;
-
-    // TOP表示：希望番号申請は「登録日」の横に出す（重複表示を避けるためカードは除外）
-    const topsRaw = topDeadlines(activeCase) || [];
-    const tops = topsRaw.filter(x=>x.label!=='希望番号申請');
-
+    const tops = topDeadlines(activeCase);
     if(tops.length===0){
       els.topCards.innerHTML = `<div class="card"><div class="t">重要期限TOP5</div><div class="d">—</div><div class="p">期限を生成すると表示されます</div></div>`;
       return;
     }
-
     els.topCards.innerHTML='';
-    tops.forEach(x=>{
-      const cls = classifyDue(x.iso);
-      const card=document.createElement('div');
-      card.className='card '+(cls==='overdue'?'danger':cls==='soon'?'warn':'');
-
-      const mainDate = `${fmtJP(x.iso)}(${weekdayJP(x.iso)})`;
-      const hopeText = hopeISO ? `希望番号申請：${fmtJP(hopeISO)}(${weekdayJP(hopeISO)})` : '';
-
-      const dateLine = (x.label==='登録日' && hopeISO)
-        ? `<div class="d dline"><span class="mainDate">${mainDate}</span><span class="inlineDue hopeDue">${hopeText}</span></div>`
-        : `<div class="d">${mainDate}</div>`;
-
-      card.innerHTML = `<div class="t">${x.label}</div>${dateLine}<div class="p">${cls==='overdue'?'期限切れ':cls==='soon'?'まもなく':' '}</div>`;
-      els.topCards.appendChild(card);
-    });
-  }
-els.topCards.innerHTML='';
     tops.forEach(x=>{
       const cls = classifyDue(x.iso);
       const card=document.createElement('div');
@@ -243,9 +216,7 @@ els.topCards.innerHTML='';
       card.innerHTML = `<div class="t">${x.label}</div><div class="d">${fmtJP(x.iso)}(${weekdayJP(x.iso)})</div><div class="p">${cls==='overdue'?'期限切れ':cls==='soon'?'まもなく':' '}</div>`;
       els.topCards.appendChild(card);
     });
-}
-
-function renderTasks(){
+  }  function renderTasks(){
     els.taskBody.innerHTML='';
     (activeCase.tasks||[]).forEach(t=>{
       const tr=document.createElement('tr');
